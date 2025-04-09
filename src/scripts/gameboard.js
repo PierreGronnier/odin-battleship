@@ -15,18 +15,30 @@ export class Gameboard {
   placeShip(length, startCoords, isHorizontal) {
     const [startX, startY] = startCoords;
     const ship = new Ship(length);
+
+    if (!this.isValidPlacement(length, startCoords, isHorizontal)) {
+      throw new Error("Invalid placement");
+    }
+
     this.ships.push(ship);
 
     for (let i = 0; i < length; i++) {
       const x = isHorizontal ? startX : startX + i;
       const y = isHorizontal ? startY + i : startY;
-
-      if (x >= this.size || y >= this.size || this.grid[x][y] !== null) {
-        throw new Error("Invalid placement");
-      }
-
       this.grid[x][y] = { ship };
     }
+  }
+
+  isValidPlacement(length, [startX, startY], isHorizontal) {
+    for (let i = 0; i < length; i++) {
+      const x = isHorizontal ? startX : startX + i;
+      const y = isHorizontal ? startY + i : startY;
+
+      if (x >= this.size || y >= this.size || this.grid[x][y] !== null) {
+        return false;
+      }
+    }
+    return true;
   }
 
   receiveAttack(coords) {
