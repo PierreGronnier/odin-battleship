@@ -1,4 +1,4 @@
-import { Ship } from "./ship";
+import { Ship } from "./ship.js";
 
 export class Gameboard {
   constructor(size = 10) {
@@ -67,5 +67,20 @@ export class Gameboard {
 
   allShipsSunk() {
     return this.ships.every((ship) => ship.isSunk());
+  }
+
+  isAlreadyAttacked(coords) {
+    const [x, y] = coords;
+    const cell = this.grid[x][y];
+
+    if (
+      this.missedAttacks.some((attack) => attack[0] === x && attack[1] === y)
+    ) {
+      return true;
+    }
+    if (cell && cell.ship && cell.ship.isSunk()) {
+      return true;
+    }
+    return false;
   }
 }

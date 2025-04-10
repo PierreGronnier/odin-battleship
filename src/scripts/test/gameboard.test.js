@@ -55,4 +55,28 @@ describe("Gameboard", () => {
     gameboard.receiveAttack([0, 0]);
     expect(gameboard.allShipsSunk()).toBe(false);
   });
+
+  test("marks ship as sunk when all parts are hit", () => {
+    gameboard.placeShip(3, [0, 0], true);
+    gameboard.receiveAttack([0, 0]);
+    gameboard.receiveAttack([0, 1]);
+    gameboard.receiveAttack([0, 2]);
+    expect(gameboard.grid[0][0].ship.isSunk()).toBe(true);
+  });
+
+  test("isAlreadyAttacked returns true for missed attack", () => {
+    gameboard.receiveAttack([0, 0]);
+    expect(gameboard.isAlreadyAttacked([0, 0])).toBe(true);
+  });
+
+  test("isAlreadyAttacked returns false for unattacked coordinates", () => {
+    expect(gameboard.isAlreadyAttacked([0, 0])).toBe(false);
+  });
+
+  test("does not place ship over another ship", () => {
+    gameboard.placeShip(3, [0, 0], true);
+    expect(() => gameboard.placeShip(2, [0, 1], true)).toThrow(
+      "Invalid placement"
+    );
+  });
 });
