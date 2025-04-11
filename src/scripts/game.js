@@ -9,21 +9,39 @@ placeShipsRandomly(computer.gameboard);
 renderGameboard(player.gameboard, "playerBoard");
 renderGameboard(computer.gameboard, "computerBoard");
 
+addGridLabels("playerBoard");
+addGridLabels("computerBoard");
+
+let gameStarted = false;
+let gameOver = false;
+
 document.getElementById("computerBoard").addEventListener("click", (event) => {
+  if (gameOver) return;
+
   if (
     event.target.classList.contains("cell") &&
     !event.target.classList.contains("disabled")
   ) {
+    if (!gameStarted && player.gameboard.ships.length === 0) {
+      showModal("You must place your ships first!");
+      return;
+    }
+
     const x = parseInt(event.target.dataset.x, 10);
     const y = parseInt(event.target.dataset.y, 10);
     const coords = [x, y];
 
     if (!computer.gameboard.isAlreadyAttacked(coords)) {
+      gameStarted = true;
+      document.getElementById("randomPlaceButton").disabled = true;
       computer.gameboard.receiveAttack(coords);
       renderGameboard(computer.gameboard, "computerBoard");
 
       if (computer.gameboard.allShipsSunk()) {
-        alert("You win! All computer ships are sunk.");
+        gameOver = true;
+        showModal("You win! All computer ships are sunk.");
+        document.getElementById("playAgainButton").style.display =
+          "inline-block";
       } else {
         computerAttack();
       }
@@ -37,7 +55,18 @@ document.getElementById("randomPlaceButton").addEventListener("click", () => {
   renderGameboard(player.gameboard, "playerBoard");
 });
 
+document.getElementById("playAgainButton").addEventListener("click", () => {
+  resetGame();
+  document.getElementById("modal").style.display = "none";
+});
+
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("modal").style.display = "none";
+});
+
 function computerAttack() {
+  if (gameOver) return;
+
   let attacked = false;
   while (!attacked) {
     const x = Math.floor(Math.random() * 10);
@@ -50,7 +79,10 @@ function computerAttack() {
       attacked = true;
 
       if (player.gameboard.allShipsSunk()) {
-        alert("Computer wins! All your ships are sunk.");
+        gameOver = true;
+        showModal("Computer wins! All your ships are sunk.");
+        document.getElementById("playAgainButton").style.display =
+          "inline-block";
       }
     }
   }
@@ -70,4 +102,46 @@ function placeShipsRandomly(gameboard) {
       } catch (e) {}
     }
   }
+}
+
+function showModal(message) {
+  document.getElementById("modalMessage").textContent = message;
+  document.getElementById("modal").style.display = "block";
+}
+
+function addGridLabels(boardId) {
+  const columnLabels = document.querySelector(`#${boardId} .column-labels`);
+  const rowLabels = document.querySelector(`#${boardId} .row-labels`);
+
+  const columns = "ABCDEFGHIJ".split("");
+  const rows = Array.from({ length: 10 }, (_, i) => i + 1);
+
+  columns.forEach((label) => {
+    const labelDiv = document.createElement("div");
+    labelDiv.textContent = label;
+    columnLabels.appendChild(labelDiv);
+  });
+
+  rows.forEach((label) => {
+    const labelDiv = document.createElement("div");
+    labelDiv.textContent = label;
+    rowLabels.appendChild(labelDiv);
+  });
+}
+
+function resetGame() {
+  gameStarted = false;
+  gameOver = false;
+
+  player.gameboard.resetGameboard();
+  computer.gameboard.resetGameboard();
+
+  placeShipsRandomly(player.gameboard);
+  placeShipsRandomly(computer.gameboard);
+
+  renderGameboard(player.gameboard, "playerBoard");
+  renderGameboard(computer.gameboard, "computerBoard");
+
+  document.getElementById("randomPlaceButton").disabled = false;
+  document.getElementById("playAgainButton").style.display = "none";
 }
