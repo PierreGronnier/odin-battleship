@@ -13,7 +13,7 @@ describe("Gameboard", () => {
     expect(gameboard.grid[0][0].ship).toBeInstanceOf(Ship);
     expect(gameboard.grid[0][1].ship).toBeInstanceOf(Ship);
     expect(gameboard.grid[0][2].ship).toBeInstanceOf(Ship);
-    expect(gameboard.grid[0][3]).toBeNull();
+    expect(gameboard.grid[0][3].ship).toBeNull();
   });
 
   test("places a ship vertically", () => {
@@ -21,7 +21,7 @@ describe("Gameboard", () => {
     expect(gameboard.grid[0][0].ship).toBeInstanceOf(Ship);
     expect(gameboard.grid[1][0].ship).toBeInstanceOf(Ship);
     expect(gameboard.grid[2][0].ship).toBeInstanceOf(Ship);
-    expect(gameboard.grid[3][0]).toBeNull();
+    expect(gameboard.grid[3][0].ship).toBeNull();
   });
 
   test("throws error for invalid ship placement", () => {
