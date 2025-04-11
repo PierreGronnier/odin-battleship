@@ -4,14 +4,16 @@ import { renderGameboard } from "./domManager.js";
 const player = new Player("Human", true);
 const computer = new Player("Computer");
 
-player.gameboard.placeShip(3, [0, 0], true);
-computer.gameboard.placeShip(3, [0, 0], true);
+placeShipsRandomly(computer.gameboard);
 
 renderGameboard(player.gameboard, "playerBoard");
 renderGameboard(computer.gameboard, "computerBoard");
 
 document.getElementById("computerBoard").addEventListener("click", (event) => {
-  if (event.target.classList.contains("cell")) {
+  if (
+    event.target.classList.contains("cell") &&
+    !event.target.classList.contains("disabled")
+  ) {
     const x = parseInt(event.target.dataset.x, 10);
     const y = parseInt(event.target.dataset.y, 10);
     const coords = [x, y];
@@ -29,6 +31,12 @@ document.getElementById("computerBoard").addEventListener("click", (event) => {
   }
 });
 
+document.getElementById("randomPlaceButton").addEventListener("click", () => {
+  player.gameboard.resetGameboard();
+  placeShipsRandomly(player.gameboard);
+  renderGameboard(player.gameboard, "playerBoard");
+});
+
 function computerAttack() {
   let attacked = false;
   while (!attacked) {
@@ -44,6 +52,22 @@ function computerAttack() {
       if (player.gameboard.allShipsSunk()) {
         alert("Computer wins! All your ships are sunk.");
       }
+    }
+  }
+}
+
+function placeShipsRandomly(gameboard) {
+  const ships = [5, 4, 3, 3, 2];
+  for (const length of ships) {
+    let placed = false;
+    while (!placed) {
+      const isHorizontal = Math.random() > 0.5;
+      const startX = Math.floor(Math.random() * 10);
+      const startY = Math.floor(Math.random() * 10);
+      try {
+        gameboard.placeShip(length, [startX, startY], isHorizontal);
+        placed = true;
+      } catch (e) {}
     }
   }
 }

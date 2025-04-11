@@ -9,14 +9,14 @@ export function renderGameboard(gameboard, elementId) {
       cellElement.dataset.x = x;
       cellElement.dataset.y = y;
 
-      if (cell.ship) {
+      if (cell.ship && elementId === "playerBoard") {
         cellElement.classList.add("ship");
-        if (cell.hit) {
-          cellElement.classList.add("hit");
-        }
-        if (cell.sunk) {
-          cellElement.classList.add("sunk");
-        }
+      }
+      if (cell.hit) {
+        cellElement.classList.add("hit");
+      }
+      if (cell.sunk) {
+        cellElement.classList.add("sunk");
       } else if (
         gameboard.missedAttacks.some(
           (attack) => attack[0] === x && attack[1] === y

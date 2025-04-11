@@ -14,6 +14,12 @@ export class Gameboard {
     );
   }
 
+  resetGameboard() {
+    this.grid = this.createGrid();
+    this.missedAttacks = [];
+    this.ships = [];
+  }
+
   placeShip(length, startCoords, isHorizontal) {
     const [startX, startY] = startCoords;
     const ship = new Ship(length);
