@@ -9,7 +9,9 @@ export class Gameboard {
   }
 
   createGrid() {
-    return Array.from({ length: this.size }, () => Array(this.size).fill(null));
+    return Array.from({ length: this.size }, () =>
+      Array.from({ length: this.size }, () => ({ hit: false, ship: null }))
+    );
   }
 
   placeShip(length, startCoords, isHorizontal) {
@@ -25,7 +27,7 @@ export class Gameboard {
     for (let i = 0; i < length; i++) {
       const x = isHorizontal ? startX : startX + i;
       const y = isHorizontal ? startY + i : startY;
-      this.grid[x][y] = { ship };
+      this.grid[x][y].ship = ship;
     }
   }
 
@@ -34,7 +36,7 @@ export class Gameboard {
       const x = isHorizontal ? startX : startX + i;
       const y = isHorizontal ? startY + i : startY;
 
-      if (x >= this.size || y >= this.size || this.grid[x][y] !== null) {
+      if (x >= this.size || y >= this.size || this.grid[x][y].ship !== null) {
         return false;
       }
     }
@@ -45,7 +47,8 @@ export class Gameboard {
     const [x, y] = coords;
     const cell = this.grid[x][y];
 
-    if (cell && cell.ship) {
+    if (cell.ship) {
+      cell.hit = true;
       cell.ship.hit();
       if (cell.ship.isSunk()) {
         this.markSunkShip(cell.ship);
@@ -58,7 +61,7 @@ export class Gameboard {
   markSunkShip(ship) {
     for (let x = 0; x < this.size; x++) {
       for (let y = 0; y < this.size; y++) {
-        if (this.grid[x][y] && this.grid[x][y].ship === ship) {
+        if (this.grid[x][y].ship === ship) {
           this.grid[x][y].sunk = true;
         }
       }
@@ -78,7 +81,7 @@ export class Gameboard {
     ) {
       return true;
     }
-    if (cell && cell.ship && cell.ship.isSunk()) {
+    if (cell.ship && cell.hit) {
       return true;
     }
     return false;

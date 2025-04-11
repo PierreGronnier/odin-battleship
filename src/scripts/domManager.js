@@ -9,12 +9,12 @@ export function renderGameboard(gameboard, elementId) {
       cellElement.dataset.x = x;
       cellElement.dataset.y = y;
 
-      if (cell && cell.ship) {
+      if (cell.ship) {
         cellElement.classList.add("ship");
-        if (cell.ship.nbhit > 0) {
+        if (cell.hit) {
           cellElement.classList.add("hit");
         }
-        if (cell.ship.isSunk()) {
+        if (cell.sunk) {
           cellElement.classList.add("sunk");
         }
       } else if (
