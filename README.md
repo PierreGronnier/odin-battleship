@@ -27,7 +27,7 @@ This project is part of [The Odin Project](https://www.theodinproject.com/) curr
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/battleship-game.git
+   git clone "link"
    cd battleship-game
    ```
 
