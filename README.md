@@ -23,6 +23,10 @@ This project is part of [The Odin Project](https://www.theodinproject.com/) curr
 - `package.json`: npm configuration.
 - `babel.config.js`: Babel setup.
 
+## Preview
+
+    You can test the game [here](https://pierregronnier.github.io/odin-battleship/)
+
 ## Setup
 
 1. Clone the repository:
