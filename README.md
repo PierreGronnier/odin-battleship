@@ -25,7 +25,7 @@ This project is part of [The Odin Project](https://www.theodinproject.com/) curr
 
 ## Preview
 
-    You can test the game [here](https://pierregronnier.github.io/odin-battleship/)
+You can test the game [here](https://pierregronnier.github.io/odin-battleship/).
 
 ## Setup
 
