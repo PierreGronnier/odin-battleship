@@ -64,27 +64,71 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("modal").style.display = "none";
 });
 
+let lastHit = null;
+
 function computerAttack() {
   if (gameOver) return;
 
   let attacked = false;
-  while (!attacked) {
-    const x = Math.floor(Math.random() * 10);
-    const y = Math.floor(Math.random() * 10);
-    const coords = [x, y];
+  const potentialTargets = [];
 
-    if (!player.gameboard.isAlreadyAttacked(coords)) {
-      player.gameboard.receiveAttack(coords);
-      renderGameboard(player.gameboard, "playerBoard");
-      attacked = true;
+  if (lastHit) {
+    const [x, y] = lastHit;
+    const adjacentCells = [
+      [x - 1, y],
+      [x + 1, y],
+      [x, y - 1],
+      [x, y + 1],
+    ];
 
-      if (player.gameboard.allShipsSunk()) {
-        gameOver = true;
-        showModal("Computer wins! All your ships are sunk.");
-        document.getElementById("playAgainButton").style.display =
-          "inline-block";
+    adjacentCells.forEach((coords) => {
+      const [adjX, adjY] = coords;
+      if (
+        adjX >= 0 &&
+        adjX < 10 &&
+        adjY >= 0 &&
+        adjY < 10 &&
+        !player.gameboard.isAlreadyAttacked(coords)
+      ) {
+        potentialTargets.push(coords);
+      }
+    });
+  }
+
+  if (potentialTargets.length > 0) {
+    const coords =
+      potentialTargets[Math.floor(Math.random() * potentialTargets.length)];
+    player.gameboard.receiveAttack(coords);
+    renderGameboard(player.gameboard, "playerBoard");
+    attacked = true;
+
+    if (player.gameboard.grid[coords[0]][coords[1]].hit) {
+      lastHit = coords;
+    } else {
+      lastHit = null;
+    }
+  } else {
+    while (!attacked) {
+      const x = Math.floor(Math.random() * 10);
+      const y = Math.floor(Math.random() * 10);
+      const coords = [x, y];
+
+      if (!player.gameboard.isAlreadyAttacked(coords)) {
+        player.gameboard.receiveAttack(coords);
+        renderGameboard(player.gameboard, "playerBoard");
+        attacked = true;
+
+        if (player.gameboard.grid[x][y].hit) {
+          lastHit = coords;
+        }
       }
     }
+  }
+
+  if (player.gameboard.allShipsSunk()) {
+    gameOver = true;
+    showModal("Computer wins! All your ships are sunk.");
+    document.getElementById("playAgainButton").style.display = "inline-block";
   }
 }
 
